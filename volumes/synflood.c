@@ -8,7 +8,7 @@
 #include <netinet/ip.h>
 #include <arpa/inet.h>
 
-/* IP Header structure */
+/* IP Header */
 struct ipheader {
   unsigned char      iph_ihl:4, //IP header length
                      iph_ver:4; //IP version
@@ -25,7 +25,7 @@ struct ipheader {
 };
 
 
-/* TCP Header structure */
+/* TCP Header */
 struct tcpheader {
     u_short tcp_sport;               /* source port */
     u_short tcp_dport;               /* destination port */
@@ -119,17 +119,13 @@ int main(int argc, char *argv[]) {
      /*********************************************************
         Step 1: Fill in the TCP header.
      ********************************************************/
-     
+
      /* missing field: what TCP source port should attacker use? */
      tcp->tcp_sport = /*your code*/
-
-     /* missing field: what TCP destination port should attacker use? */
-     tcp->tcp_dport = htons(/*your code*/);
-
+     tcp->tcp_dport = htons(DEST_PORT);
      /* missing field: what initial sequence number should attacker use? */
-     tcp->tcp_seq   = /*your code*/
+     tcp->tcp_seq = /*your code*/
      tcp->tcp_offx2 = 0x50;
-
      /* missing field: what TCP flag shoud attacker use? */
      tcp->tcp_flags = /*your code*/
      tcp->tcp_win   = htons(20000);
@@ -141,13 +137,9 @@ int main(int argc, char *argv[]) {
      ip->iph_ver = 4;   // Version (IPV4)
      ip->iph_ihl = 5;   // Header length
      ip->iph_ttl = 50;  // Time to live
-
      /* missing field: what source IP address shoud attacker use? */
      ip->iph_sourceip.s_addr = /*your code*/
-
-     /* missing field: what destination IP address shoud attacker use? */
-     ip->iph_destip.s_addr = inet_addr(/*your code*/);
-
+     ip->iph_destip.s_addr = inet_addr(DEST_IP);
      ip->iph_protocol = IPPROTO_TCP; // The value is 6.
      ip->iph_len = htons(sizeof(struct ipheader) +
                          sizeof(struct tcpheader));
