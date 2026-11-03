@@ -1,0 +1,51 @@
+services:
+    attacker:
+        image: cybersecedu/tcp-lab-ubuntu-24.04:1.0
+        container_name: attacker
+        hostname: attacker
+        tty: true
+        privileged: true
+        volumes:
+            - ./volumes:/volumes
+        network_mode: host
+
+    Victim:
+        image: cybersecedu/tcp-lab-ubuntu-24.04:1.0
+        container_name: victim-192.168.60.2
+        hostname: victim
+        tty: true
+        cap_add:
+            - ALL
+        privileged: true
+        sysctls:
+            - net.ipv4.tcp_syncookies=0
+        networks:
+            net-192.168.60.0:
+                ipv4_address: 192.168.60.2
+        command: bash -c "
+            /etc/init.d/openbsd-inetd start &&
+            tail -f /dev/null
+            "
+
+    User1:
+        image: cybersecedu/tcp-lab-ubuntu-24.04:1.0
+        container_name: user1-192.168.60.3
+        hostname: user1
+        tty: true
+        cap_add:
+            - ALL
+        networks:
+            net-192.168.60.0:
+                ipv4_address: 192.168.60.3
+        command: bash -c "
+            /etc/init.d/openbsd-inetd start &&
+            tail -f /dev/null
+            "
+
+networks:
+    net-192.168.60.0:
+        name: net-192.168.60.0
+        ipam:
+            config:
+                - subnet: 192.168.60.0/24
+
